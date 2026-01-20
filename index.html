@@ -76,6 +76,42 @@
             </label>
             <input type="file" id="fileInput" accept="audio/mp3,audio/mpeg,audio/wav,audio/x-wav,audio/flac,audio/x-flac,audio/m4a,audio/aac,audio/ogg,audio/opus,audio/*" multiple hidden capture="environment">
         </div>
+
+        <!-- Mini Player -->
+        <div id="miniPlayer" class="mini-player hidden">
+            <div class="mini-player-info">
+                <div class="mini-player-cover" id="miniPlayerCover"></div>
+                <div class="mini-player-text">
+                    <h4 id="miniPlayerTitle">Track Title</h4>
+                    <p id="miniPlayerArtist">Artist Name</p>
+                </div>
+            </div>
+            <div class="mini-player-controls">
+                <button class="btn-mini" id="miniPrevBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                    </svg>
+                </button>
+                <button class="btn-mini btn-mini-play" id="miniPlayBtn">
+                    <svg id="miniPlayIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <svg id="miniPauseIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="hidden">
+                        <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
+                    </svg>
+                </button>
+                <button class="btn-mini" id="miniNextBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 18h2V6h-2zm-11-7l8.5-6v12z"/>
+                    </svg>
+                </button>
+                <button class="btn-mini" id="miniOpenPlayerBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 15l-6-6-6 6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Player View -->

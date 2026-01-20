@@ -31,6 +31,18 @@ class VinylMusicPlayer {
     this.playbackRate = 1.0;
     this.pitchValue = 0;
 
+    // Vinyl texture
+    this.vinylTexture = new Image();
+    this.vinylTexture.src = 'Vynil_vinil_92837841.png';
+    this.vinylTextureLoaded = false;
+    this.vinylTexture.onload = () => {
+      this.vinylTextureLoaded = true;
+      console.log('Vinyl texture loaded successfully');
+    };
+    this.vinylTexture.onerror = () => {
+      console.error('Failed to load vinyl texture');
+    };
+
     this.init();
   }
 
@@ -67,6 +79,27 @@ class VinylMusicPlayer {
           fileInput.click();
         }
       });
+    }
+
+    // Mini player controls
+    const miniPlayBtn = document.getElementById('miniPlayBtn');
+    if (miniPlayBtn) {
+      miniPlayBtn.addEventListener('click', () => this.togglePlay());
+    }
+
+    const miniPrevBtn = document.getElementById('miniPrevBtn');
+    if (miniPrevBtn) {
+      miniPrevBtn.addEventListener('click', () => this.previousTrack());
+    }
+
+    const miniNextBtn = document.getElementById('miniNextBtn');
+    if (miniNextBtn) {
+      miniNextBtn.addEventListener('click', () => this.nextTrack());
+    }
+
+    const miniOpenPlayerBtn = document.getElementById('miniOpenPlayerBtn');
+    if (miniOpenPlayerBtn) {
+      miniOpenPlayerBtn.addEventListener('click', () => this.openPlayer(this.currentTrackIndex));
     }
 
     // Player controls
@@ -361,20 +394,12 @@ class VinylMusicPlayer {
       card.className = 'vinyl-card glass';
       card.dataset.track = index;
 
-      const vinylStyle = track.colors ?
-        `background: linear-gradient(135deg, ${track.colors.darker} 0%, ${track.colors.primary} 100%);` : '';
-
-      const centerStyle = track.coverArt ?
-        `background-image: url('${track.coverArt}'); background-size: cover; background-position: center;` :
-        (track.colors ? `background: linear-gradient(135deg, ${track.colors.primary} 0%, ${track.colors.lighter} 100%);` : '');
-
-      // Create dynamic glow color from track
-      const glowColor = track.colors ? track.colors.primary : 'rgb(102, 126, 234)';
+      // Create canvas for vinyl
+      const canvasId = `vinyl-card-canvas-${index}`;
 
       card.innerHTML = `
-        <div class="vinyl-disc" style="${vinylStyle}">
-          <div class="vinyl-center" style="${centerStyle}"></div>
-          <div class="vinyl-grooves"></div>
+        <div class="vinyl-disc-wrapper">
+          <canvas class="vinyl-card-canvas" id="${canvasId}" width="300" height="300"></canvas>
         </div>
         <div class="track-info">
           <h3 class="track-title">${track.title}</h3>
@@ -382,10 +407,11 @@ class VinylMusicPlayer {
         </div>
       `;
 
-      // No glow effects in Web 1.0 style - just simple hover
-
       card.addEventListener('click', () => this.openPlayer(index));
       grid.appendChild(card);
+
+      // Draw vinyl on card after it's added to DOM
+      setTimeout(() => this.drawLibraryVinyl(canvasId, track), 0);
     });
   }
 
@@ -414,9 +440,12 @@ class VinylMusicPlayer {
   }
 
   closePlayer() {
-    this.pause();
+    // Don't pause - keep music playing during navigation
     this.player.classList.add('hidden');
     this.library.classList.remove('hidden');
+
+    // Show mini player when closing full player
+    this.updateMiniPlayer();
   }
 
   loadTrack(index) {
@@ -478,6 +507,9 @@ class VinylMusicPlayer {
     document.getElementById('playIcon').classList.add('hidden');
     document.getElementById('pauseIcon').classList.remove('hidden');
     document.getElementById('tonearm').classList.add('playing');
+
+    // Update mini player
+    this.updateMiniPlayer();
   }
 
   pause() {
@@ -488,6 +520,9 @@ class VinylMusicPlayer {
     document.getElementById('playIcon').classList.remove('hidden');
     document.getElementById('pauseIcon').classList.add('hidden');
     document.getElementById('tonearm').classList.remove('playing');
+
+    // Update mini player
+    this.updateMiniPlayer();
   }
 
   previousTrack() {
@@ -642,36 +677,67 @@ class VinylMusicPlayer {
     // Save context
     ctx.save();
 
-    // Rotate canvas
+    // Rotate canvas for vinyl disc
     ctx.translate(centerX, centerY);
     ctx.rotate((this.rotation * Math.PI) / 180);
     ctx.translate(-centerX, -centerY);
 
-    // Draw vinyl disc - olive/gold color like real vinyl
-    ctx.fillStyle = '#4A4A3A';
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Draw grooves - visible concentric circles
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < 150; i++) {
-      const grooveRadius = radius * 0.38 + (i * (radius * 0.62)) / 150;
+    // Draw vinyl disc with texture if loaded
+    if (this.vinylTextureLoaded) {
+      // Clip to circle
+      ctx.save();
       ctx.beginPath();
-      ctx.arc(centerX, centerY, grooveRadius, 0, 2 * Math.PI);
-      ctx.stroke();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.clip();
+
+      // Draw vinyl texture
+      ctx.drawImage(
+        this.vinylTexture,
+        centerX - radius,
+        centerY - radius,
+        radius * 2,
+        radius * 2
+      );
+
+      // Apply color tint based on cover art colors
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = colors.primary;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Add lighter overlay for depth
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = colors.lighter.replace('rgb', 'rgba').replace(')', ', 0.2)');
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.restore();
+    } else {
+      // Fallback: Draw vinyl disc with solid color
+      ctx.fillStyle = '#4A4A3A';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Draw grooves - visible concentric circles
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < 150; i++) {
+        const grooveRadius = radius * 0.38 + (i * (radius * 0.62)) / 150;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, grooveRadius, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
     }
 
-    // Restore context for non-rotating elements
-    ctx.restore();
-    ctx.save();
-
-    // Draw center label (non-rotating)
+    // Draw center label WITH rotation (rotates with vinyl)
     const labelRadius = radius * 0.38;
 
     if (coverArt && this.coverImage && this.coverImage.complete) {
-      // Draw cover art as center label
+      // Draw cover art as center label - ROTATES with vinyl
       ctx.save();
       ctx.beginPath();
       ctx.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
@@ -726,6 +792,183 @@ class VinylMusicPlayer {
   animateVinyl() {
     this.drawVinyl();
     requestAnimationFrame(() => this.animateVinyl());
+  }
+
+  // ==========================================
+  // LIBRARY VINYL RENDERING
+  // ==========================================
+
+  drawLibraryVinyl(canvasId, track) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = canvas.width / 2 - 10;
+
+    const colors = track.colors || this.getDefaultColors();
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw vinyl disc with texture if loaded
+    if (this.vinylTextureLoaded) {
+      // Clip to circle
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.clip();
+
+      // Draw vinyl texture
+      ctx.drawImage(
+        this.vinylTexture,
+        centerX - radius,
+        centerY - radius,
+        radius * 2,
+        radius * 2
+      );
+
+      // Apply color tint based on cover art colors
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = colors.primary;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Add lighter overlay for depth
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = colors.lighter.replace('rgb', 'rgba').replace(')', ', 0.15)');
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.restore();
+    } else {
+      // Fallback: Draw vinyl disc with solid color
+      ctx.fillStyle = '#4A4A3A';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Draw grooves
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 100; i++) {
+        const grooveRadius = radius * 0.38 + (i * (radius * 0.62)) / 100;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, grooveRadius, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+    }
+
+    // Draw center label
+    const labelRadius = radius * 0.38;
+
+    if (track.coverArt) {
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = () => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
+        ctx.clip();
+        ctx.drawImage(
+          img,
+          centerX - labelRadius,
+          centerY - labelRadius,
+          labelRadius * 2,
+          labelRadius * 2
+        );
+        ctx.restore();
+
+        // Add border to cover
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
+        ctx.stroke();
+
+        // Draw center hole
+        this.drawCenterHole(ctx, centerX, centerY, labelRadius);
+      };
+      img.src = track.coverArt;
+    } else {
+      // Draw simple colored label
+      ctx.fillStyle = '#FF6600';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Add border
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      // Draw center hole
+      this.drawCenterHole(ctx, centerX, centerY, labelRadius);
+    }
+  }
+
+  drawCenterHole(ctx, centerX, centerY, labelRadius) {
+    // Draw center hole
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, labelRadius * 0.2, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Inner hole shadow
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, labelRadius * 0.2, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+
+  // ==========================================
+  // MINI PLAYER
+  // ==========================================
+
+  updateMiniPlayer() {
+    const miniPlayer = document.getElementById('miniPlayer');
+    if (!miniPlayer) return;
+
+    const track = this.tracks[this.currentTrackIndex];
+
+    // Show mini player only when in library view and track is loaded
+    if (this.library.classList.contains('hidden') || !track || !this.audio.src) {
+      miniPlayer.classList.add('hidden');
+      return;
+    }
+
+    miniPlayer.classList.remove('hidden');
+
+    // Update track info
+    document.getElementById('miniPlayerTitle').textContent = track.title || 'Unknown Track';
+    document.getElementById('miniPlayerArtist').textContent = track.artist || 'Unknown Artist';
+
+    // Update cover art
+    const coverEl = document.getElementById('miniPlayerCover');
+    if (track.coverArt) {
+      coverEl.style.backgroundImage = `url('${track.coverArt}')`;
+    } else {
+      coverEl.style.backgroundImage = '';
+      coverEl.style.backgroundColor = '#808080';
+    }
+
+    // Update play/pause button
+    const miniPlayIcon = document.getElementById('miniPlayIcon');
+    const miniPauseIcon = document.getElementById('miniPauseIcon');
+    if (this.isPlaying) {
+      miniPlayIcon.classList.add('hidden');
+      miniPauseIcon.classList.remove('hidden');
+    } else {
+      miniPlayIcon.classList.remove('hidden');
+      miniPauseIcon.classList.add('hidden');
+    }
   }
 }
 

@@ -94,6 +94,25 @@ body {
   margin: 0 auto;
 }
 
+/* Mobile responsive grid */
+@media (max-width: 768px) {
+  .library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .library-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .library-container {
+    padding: 70px 15px 40px;
+  }
+}
+
 /* Empty State - Web 1.0 Style */
 .empty-state {
   grid-column: 1 / -1;
@@ -149,70 +168,27 @@ body {
   background-color: #CCCCCC;
 }
 
-/* Vinyl Disc - Simple Circle with visible grooves */
-.vinyl-disc {
+/* Vinyl Disc Wrapper - Canvas Container */
+.vinyl-disc-wrapper {
   width: 100%;
   aspect-ratio: 1;
-  background: #4A4A3A;
-  border-radius: 50%;
+  margin-bottom: 10px;
   position: relative;
   border: 3px solid #000000;
-  margin-bottom: 10px;
+  border-radius: 50%;
   overflow: hidden;
+  background: #4A4A3A;
 }
 
-.vinyl-card:hover .vinyl-disc {
+.vinyl-card:hover .vinyl-disc-wrapper {
   border-color: #FF0000;
 }
 
-/* Vinyl Center Label - Simple Style */
-.vinyl-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 35%;
-  height: 35%;
-  transform: translate(-50%, -50%);
-  background-color: #FF6600;
-  border-radius: 50%;
-  border: 2px solid #000000;
-  overflow: hidden;
-  z-index: 2;
-}
-
-.vinyl-center::before {
-  display: none;
-}
-
-.vinyl-center::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 25%;
-  height: 25%;
-  transform: translate(-50%, -50%);
-  background-color: #000000;
-  border-radius: 50%;
-}
-
-/* Vinyl Grooves - More visible */
-.vinyl-grooves {
-  position: absolute;
-  top: 0;
-  left: 0;
+.vinyl-card-canvas {
   width: 100%;
   height: 100%;
-  background-image: repeating-radial-gradient(
-    circle at center,
-    transparent 0px,
-    transparent 1.5px,
-    rgba(0, 0, 0, 0.4) 1.5px,
-    rgba(0, 0, 0, 0.4) 2px
-  );
+  display: block;
   border-radius: 50%;
-  pointer-events: none;
-  z-index: 1;
 }
 
 /* Track Info - Classic Typography */
@@ -347,6 +323,34 @@ body {
   background-color: #FFFFFF;
   border: 2px solid #000000;
   padding: 10px;
+}
+
+/* Mobile responsive player */
+@media (max-width: 768px) {
+  .vinyl-wrapper {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-container {
+    padding: 70px 15px 30px;
+    gap: 15px;
+  }
+
+  .vinyl-player {
+    padding: 15px;
+  }
+
+  .vinyl-wrapper {
+    max-width: 280px;
+    padding: 8px;
+  }
+
+  .tonearm {
+    width: 80px;
+    height: 4px;
+  }
 }
 
 #vinylCanvas {
@@ -757,4 +761,177 @@ a:hover {
 
 a:active {
   color: #FF0000;
+}
+
+/* ==========================================
+   MINI PLAYER - Bottom Bar
+   ========================================== */
+.mini-player {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 500px;
+  width: calc(100% - 40px);
+  background-color: #C0C0C0;
+  border: 3px solid #000000;
+  border-bottom: 3px outset #FFFFFF;
+  border-top: 3px outset #FFFFFF;
+  border-left: 3px outset #FFFFFF;
+  border-right: 3px inset #808080;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  z-index: 900;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.mini-player.hidden {
+  display: none;
+}
+
+.mini-player-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mini-player-cover {
+  width: 50px;
+  height: 50px;
+  background-color: #808080;
+  border: 2px solid #000000;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.mini-player-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.mini-player-text h4 {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-player-text p {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #666666;
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-player-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-mini {
+  background-color: #C0C0C0;
+  border: 2px outset #FFFFFF;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: none;
+  color: #000000;
+}
+
+.btn-mini:hover {
+  background-color: #D0D0D0;
+}
+
+.btn-mini:active {
+  border: 2px inset #808080;
+  background-color: #B0B0B0;
+}
+
+.btn-mini-play {
+  width: 44px;
+  height: 44px;
+  border: 3px outset #FFFFFF;
+}
+
+.btn-mini-play:active {
+  border: 3px inset #808080;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .mini-player {
+    padding: 8px 10px;
+    bottom: 15px;
+    width: calc(100% - 30px);
+    max-width: 100%;
+    gap: 8px;
+  }
+
+  .mini-player-cover {
+    width: 45px;
+    height: 45px;
+  }
+
+  .mini-player-text h4 {
+    font-size: 13px;
+  }
+
+  .mini-player-text p {
+    font-size: 11px;
+  }
+
+  .btn-mini {
+    width: 32px;
+    height: 32px;
+  }
+
+  .btn-mini svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .btn-mini-play {
+    width: 40px;
+    height: 40px;
+  }
+
+  .btn-mini-play svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Hide "open player" button on very small screens */
+  @media (max-width: 400px) {
+    #miniOpenPlayerBtn {
+      display: none;
+    }
+  }
+}
+
+/* Adjust library container for mini player */
+.library-container {
+  padding-bottom: 120px;
+}
+
+/* Add track button should stay above mini player */
+.add-track-container {
+  margin-bottom: 20px;
 }
