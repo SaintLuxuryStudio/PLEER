@@ -1,0 +1,843 @@
+/* ==========================================
+   LIQUID GLASS MUSIC PLAYER - STYLES
+   Based on Apple Liquid Glass Design System v2025
+   ========================================== */
+
+/* CSS Variables */
+:root {
+  /* Glass Materials - Light Mode */
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-bg-secondary: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow-inner: rgba(255, 255, 255, 0.4);
+  --glass-shadow-outer: rgba(31, 38, 135, 0.15);
+  --text-primary: #1f2121;
+  --text-secondary: #4b5563;
+
+  /* Animation Tokens */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Vinyl Colors */
+  --vinyl-black: #1a1a1a;
+  --vinyl-label: #ff6b35;
+}
+
+/* Dark Mode - Enhanced */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-secondary: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-shadow-inner: rgba(255, 255, 255, 0.12);
+    --glass-shadow-outer: rgba(0, 0, 0, 0.4);
+    --text-primary: #ffffff;
+    --text-secondary: #b8bcc8;
+  }
+}
+
+/* Light Mode adjustments (force dark for this design) */
+@media (prefers-color-scheme: light) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-secondary: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-shadow-inner: rgba(255, 255, 255, 0.12);
+    --glass-shadow-outer: rgba(0, 0, 0, 0.4);
+    --text-primary: #ffffff;
+    --text-secondary: #b8bcc8;
+  }
+}
+
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: var(--text-primary);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Background - Pure black */
+.background-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  z-index: -1;
+}
+
+/* Glass Base Class - Enhanced */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(200%) brightness(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 4px 20px rgba(255, 255, 255, 0.1) inset,
+    0 0 80px rgba(102, 126, 234, 0.1);
+  position: relative;
+}
+
+/* ==========================================
+   NAVIGATION BAR
+   ========================================== */
+.navbar-glass {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(40px) saturate(200%) brightness(1.3);
+  -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(102, 126, 234, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================
+   LIBRARY VIEW
+   ========================================== */
+.library-container {
+  min-height: 100vh;
+  padding: 90px 20px 100px;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Empty State */
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 80px;
+  opacity: 0.3;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.empty-text {
+  font-size: 18px;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+/* Vinyl Card */
+.vinyl-card {
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  will-change: transform;
+  overflow: visible;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(30px) saturate(180%) brightness(1.2);
+  -webkit-backdrop-filter: blur(30px) saturate(180%) brightness(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 2px 16px rgba(255, 255, 255, 0.06) inset;
+}
+
+.vinyl-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(102, 126, 234, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+    0 4px 24px rgba(255, 255, 255, 0.12) inset;
+}
+
+.vinyl-card:active {
+  transform: translateY(-8px) scale(1.01);
+}
+
+/* Vinyl Disc */
+.vinyl-disc {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-radius: 50%;
+  position: relative;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(102, 126, 234, 0.2),
+    inset 0 2px 10px rgba(255, 255, 255, 0.1);
+  margin-bottom: 15px;
+  transition: all var(--transition-slow);
+  filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.2));
+}
+
+.vinyl-card:hover .vinyl-disc {
+  transform: rotate(15deg) scale(1.05);
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.6),
+    0 0 80px rgba(102, 126, 234, 0.4),
+    0 0 40px rgba(118, 75, 162, 0.3),
+    inset 0 3px 15px rgba(255, 255, 255, 0.15);
+  filter: drop-shadow(0 0 40px rgba(102, 126, 234, 0.5));
+}
+
+/* Vinyl Center Label */
+.vinyl-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 38%;
+  height: 38%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, var(--vinyl-label) 0%, #ff8c42 100%);
+  border-radius: 50%;
+  box-shadow:
+    0 3px 15px rgba(0, 0, 0, 0.4),
+    inset 0 1px 8px rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.vinyl-center::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20%;
+  height: 20%;
+  transform: translate(-50%, -50%);
+  background: #1a1a1a;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+/* Vinyl Grooves */
+.vinyl-grooves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at center,
+    transparent 0px,
+    transparent 2px,
+    rgba(255, 255, 255, 0.02) 2px,
+    rgba(255, 255, 255, 0.02) 4px
+  );
+}
+
+/* Track Info */
+.track-info {
+  text-align: center;
+}
+
+.track-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-artist {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Add Track Button */
+.add-track-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.btn-add {
+  display: inline-block;
+  padding: 15px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ==========================================
+   PLAYER VIEW
+   ========================================== */
+.player-container {
+  min-height: 100vh;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  position: relative;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Back Button */
+.btn-back {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  transition: all var(--transition-normal);
+  color: var(--text-primary);
+}
+
+.btn-back:hover {
+  transform: translateX(-5px);
+  background: rgba(255, 255, 255, 0.20);
+}
+
+/* Vinyl Player */
+.vinyl-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  width: 100%;
+  max-width: 450px;
+}
+
+.vinyl-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1;
+}
+
+#vinylCanvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 100px rgba(102, 126, 234, 0.3),
+    0 0 60px rgba(118, 75, 162, 0.2),
+    inset 0 5px 20px rgba(255, 255, 255, 0.15),
+    inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+  filter: drop-shadow(0 0 40px rgba(102, 126, 234, 0.4));
+}
+
+#vinylCanvas:active {
+  cursor: grabbing;
+}
+
+/* Tonearm */
+.tonearm {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  width: 40%;
+  height: 8px;
+  background: linear-gradient(90deg, #c0c0c0 0%, #888 50%, #555 100%);
+  border-radius: 20px;
+  transform-origin: right center;
+  transform: rotate(-35deg);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.3),
+    inset 0 1px 3px rgba(255, 255, 255, 0.4);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.tonearm::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #ff6b35 0%, #ff8c42 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(255, 107, 53, 0.5);
+}
+
+.tonearm.playing {
+  transform: rotate(-5deg);
+}
+
+/* Track Display */
+.track-display {
+  width: 100%;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(200%) brightness(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(102, 126, 234, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 4px 20px rgba(255, 255, 255, 0.08) inset;
+}
+
+#playerTrackTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+#playerTrackArtist {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* Time Display */
+.time-display {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 450px;
+  padding: 15px 25px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(30px) saturate(180%) brightness(1.2);
+  -webkit-backdrop-filter: blur(30px) saturate(180%) brightness(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+/* Controls Panel */
+.controls-panel {
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px) saturate(200%) brightness(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(118, 75, 162, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 4px 24px rgba(255, 255, 255, 0.1) inset;
+}
+
+/* Playback Controls */
+.playback-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Button Glass Base */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px) saturate(180%) brightness(1.3);
+  -webkit-backdrop-filter: blur(30px) saturate(180%) brightness(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(102, 126, 234, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 2px 12px rgba(255, 255, 255, 0.08) inset;
+  color: var(--text-primary);
+  font-weight: 500;
+  will-change: transform;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glass::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(102, 126, 234, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+    0 4px 16px rgba(255, 255, 255, 0.15) inset;
+  transform: translateY(-3px);
+}
+
+.btn-glass:hover::after {
+  width: 100%;
+  height: 100%;
+}
+
+.btn-glass:active {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(102, 126, 234, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+    0 2px 12px rgba(255, 255, 255, 0.1) inset;
+}
+
+.btn-glass:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.8);
+  outline-offset: 3px;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(59, 130, 246, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+/* Control Buttons */
+.btn-control {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.btn-play {
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.20);
+}
+
+/* Control Groups */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.control-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* Slider Container */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slider-value {
+  font-size: 12px;
+  color: var(--text-secondary);
+  min-width: 35px;
+  text-align: center;
+}
+
+/* Slider Styling */
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  outline: none;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+  transition: all var(--transition-fast);
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.7);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+  transition: all var(--transition-fast);
+}
+
+.slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.7);
+}
+
+/* Current Value Display */
+.current-value {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+/* Reset Button */
+.btn-reset {
+  padding: 12px 24px;
+  font-size: 14px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+  .glass {
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+  }
+
+  .library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+  }
+}
+
+/* Mobile (320px - 767px) */
+@media (max-width: 767px) {
+  .glass {
+    backdrop-filter: blur(15px) saturate(175%);
+    -webkit-backdrop-filter: blur(15px) saturate(175%);
+    border-radius: 12px;
+  }
+
+  .navbar-glass {
+    height: 60px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .library-container {
+    padding: 80px 15px 80px;
+  }
+
+  .library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+  }
+
+  .vinyl-card {
+    padding: 15px;
+  }
+
+  .track-title {
+    font-size: 14px;
+  }
+
+  .track-artist {
+    font-size: 12px;
+  }
+
+  .player-container {
+    padding: 20px 15px;
+    gap: 20px;
+  }
+
+  .btn-back {
+    width: 45px;
+    height: 45px;
+    top: 20px;
+    left: 15px;
+  }
+
+  .vinyl-wrapper {
+    max-width: 320px;
+  }
+
+  #playerTrackTitle {
+    font-size: 20px;
+  }
+
+  #playerTrackArtist {
+    font-size: 14px;
+  }
+
+  .controls-panel {
+    padding: 20px;
+  }
+
+  .btn-control {
+    width: 50px;
+    height: 50px;
+  }
+
+  .btn-play {
+    width: 65px;
+    height: 65px;
+  }
+}
+
+/* ==========================================
+   ACCESSIBILITY
+   ========================================== */
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .glass,
+  .btn-glass,
+  .vinyl-card,
+  .vinyl-disc,
+  .tonearm,
+  .background-gradient {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .vinyl-card:hover {
+    transform: none;
+  }
+
+  #vinylCanvas {
+    transition: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: more) {
+  .glass {
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .btn-glass:focus-visible {
+    outline: 3px solid #2563eb;
+  }
+}
+
+/* ==========================================
+   PERFORMANCE OPTIMIZATION
+   ========================================== */
+
+.glass,
+.btn-glass,
+.vinyl-card,
+#vinylCanvas {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* ==========================================
+   BROWSER FALLBACKS
+   ========================================== */
+
+@supports not (backdrop-filter: blur(1px)) {
+  .glass {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .glass {
+      background: rgba(30, 30, 30, 0.9);
+    }
+  }
+}
