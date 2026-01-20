@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
     <title>Vinyl Player - Liquid Glass</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%231a1a1a'/><circle cx='50' cy='50' r='20' fill='%23ff6b35'/><circle cx='50' cy='50' r='5' fill='%231a1a1a'/></svg>">
     <link rel="stylesheet" href="styles.css">
     <!-- jsmediatags for metadata extraction -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
@@ -72,7 +74,7 @@
             <label for="fileInput" class="btn-glass btn-add">
                 <span>+ Добавить трек</span>
             </label>
-            <input type="file" id="fileInput" accept="audio/*" multiple hidden>
+            <input type="file" id="fileInput" accept="audio/mp3,audio/mpeg,audio/wav,audio/x-wav,audio/flac,audio/x-flac,audio/m4a,audio/aac,audio/ogg,audio/opus,audio/*" multiple hidden capture="environment">
         </div>
     </div>
 

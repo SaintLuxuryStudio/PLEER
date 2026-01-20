@@ -57,6 +57,18 @@ class VinylMusicPlayer {
       fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
     }
 
+    // iOS fix: Also handle click on label
+    const addBtn = document.querySelector('.btn-add');
+    if (addBtn && fileInput) {
+      addBtn.addEventListener('click', (e) => {
+        // Force trigger file input on iOS
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          e.preventDefault();
+          fileInput.click();
+        }
+      });
+    }
+
     // Player controls
     const backBtn = document.getElementById('backBtn');
     if (backBtn) {
