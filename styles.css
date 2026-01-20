@@ -149,15 +149,16 @@ body {
   background-color: #CCCCCC;
 }
 
-/* Vinyl Disc - Simple Circle */
+/* Vinyl Disc - Simple Circle with visible grooves */
 .vinyl-disc {
   width: 100%;
   aspect-ratio: 1;
-  background: radial-gradient(circle, #333333 0%, #000000 100%);
+  background: #4A4A3A;
   border-radius: 50%;
   position: relative;
   border: 3px solid #000000;
   margin-bottom: 10px;
+  overflow: hidden;
 }
 
 .vinyl-card:hover .vinyl-disc {
@@ -195,7 +196,7 @@ body {
   border-radius: 50%;
 }
 
-/* Vinyl Grooves */
+/* Vinyl Grooves - More visible */
 .vinyl-grooves {
   position: absolute;
   top: 0;
@@ -205,12 +206,13 @@ body {
   background-image: repeating-radial-gradient(
     circle at center,
     transparent 0px,
-    transparent 3px,
-    rgba(255, 255, 255, 0.1) 3px,
-    rgba(255, 255, 255, 0.1) 4px
+    transparent 1.5px,
+    rgba(0, 0, 0, 0.4) 1.5px,
+    rgba(0, 0, 0, 0.4) 2px
   );
   border-radius: 50%;
   pointer-events: none;
+  z-index: 1;
 }
 
 /* Track Info - Classic Typography */

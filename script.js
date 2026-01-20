@@ -382,24 +382,7 @@ class VinylMusicPlayer {
         </div>
       `;
 
-      // Add dynamic glow on hover
-      const vinylDisc = card.querySelector('.vinyl-disc');
-      card.addEventListener('mouseenter', () => {
-        if (track.colors) {
-          vinylDisc.style.boxShadow = `
-            0 15px 40px rgba(0, 0, 0, 0.6),
-            0 0 80px ${this.hexToRgba(glowColor, 0.4)},
-            0 0 40px ${this.hexToRgba(glowColor, 0.3)},
-            inset 0 3px 15px rgba(255, 255, 255, 0.15)
-          `;
-          vinylDisc.style.filter = `drop-shadow(0 0 40px ${this.hexToRgba(glowColor, 0.5)})`;
-        }
-      });
-
-      card.addEventListener('mouseleave', () => {
-        vinylDisc.style.boxShadow = '';
-        vinylDisc.style.filter = '';
-      });
+      // No glow effects in Web 1.0 style - just simple hover
 
       card.addEventListener('click', () => this.openPlayer(index));
       grid.appendChild(card);
@@ -454,19 +437,10 @@ class VinylMusicPlayer {
       this.coverImage = null;
     }
 
-    // Apply dynamic glow to vinyl canvas based on track colors
-    if (track.colors && this.canvas) {
-      const glowColor = this.hexToRgba(track.colors.primary, 0.4);
-      const glowColor2 = this.hexToRgba(track.colors.lighter, 0.3);
-
-      this.canvas.style.boxShadow = `
-        0 20px 60px rgba(0, 0, 0, 0.6),
-        0 0 100px ${glowColor},
-        0 0 60px ${glowColor2},
-        inset 0 5px 20px rgba(255, 255, 255, 0.15),
-        inset 0 -5px 20px rgba(0, 0, 0, 0.3)
-      `;
-      this.canvas.style.filter = `drop-shadow(0 0 40px ${glowColor})`;
+    // Remove any glow effects (Web 1.0 style - no fancy effects)
+    if (this.canvas) {
+      this.canvas.style.boxShadow = '';
+      this.canvas.style.filter = '';
     }
 
     // Reset effects
@@ -673,22 +647,17 @@ class VinylMusicPlayer {
     ctx.rotate((this.rotation * Math.PI) / 180);
     ctx.translate(-centerX, -centerY);
 
-    // Draw vinyl disc with track colors
-    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-    gradient.addColorStop(0, colors.lighter);
-    gradient.addColorStop(0.5, colors.primary);
-    gradient.addColorStop(1, colors.darker);
-
-    ctx.fillStyle = gradient;
+    // Draw vinyl disc - olive/gold color like real vinyl
+    ctx.fillStyle = '#4A4A3A';
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
     ctx.fill();
 
-    // Draw grooves
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 120; i++) {
-      const grooveRadius = radius * 0.38 + (i * (radius * 0.62)) / 120;
+    // Draw grooves - visible concentric circles
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 150; i++) {
+      const grooveRadius = radius * 0.38 + (i * (radius * 0.62)) / 150;
       ctx.beginPath();
       ctx.arc(centerX, centerY, grooveRadius, 0, 2 * Math.PI);
       ctx.stroke();
@@ -723,18 +692,18 @@ class VinylMusicPlayer {
       ctx.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
       ctx.stroke();
     } else {
-      // Draw colored label
-      const labelGradient = ctx.createRadialGradient(
-        centerX, centerY, 0,
-        centerX, centerY, labelRadius
-      );
-      labelGradient.addColorStop(0, colors.lighter);
-      labelGradient.addColorStop(1, colors.primary);
-
-      ctx.fillStyle = labelGradient;
+      // Draw simple colored label (no gradient - Web 1.0 style)
+      ctx.fillStyle = '#FF6600';
       ctx.beginPath();
       ctx.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
       ctx.fill();
+
+      // Add border
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, labelRadius, 0, 2 * Math.PI);
+      ctx.stroke();
     }
 
     // Draw center hole
